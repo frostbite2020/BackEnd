@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace todoList.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/lists")]
     [ApiController]
     public class TodoListController : ControllerBase
     {
@@ -63,7 +63,7 @@ namespace todoList.Controllers
         //get by todoid
         //GET : api/TodoCategory
         [HttpGet]
-        [Route("{todoCategoryID}")]
+        [Route("{todo-category-id}")]
         public IActionResult GetListByCategoryID(int todoCategoryID)
         {
             try

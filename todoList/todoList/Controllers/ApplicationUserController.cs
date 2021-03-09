@@ -14,7 +14,7 @@ using Entities.Models;
 
 namespace todoList.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/application-user")]
     [ApiController]
     public class ApplicationUserController : ControllerBase
     {
@@ -38,7 +38,7 @@ namespace todoList.Controllers
             return a;
         }*/
         [HttpPost]
-        [Route("Register")]
+        [Route("register")]
         // POST: /api/ApplicationUser/Register
         public async Task<Object> PostApplicationUser(ApplicationUserModel model)
         {
@@ -61,7 +61,7 @@ namespace todoList.Controllers
         }
 
         [HttpPost]
-        [Route("Login")]
+        [Route("login")]
         //POST : /api/ApplicationUser/Login
         public async Task<IActionResult> Login(LoginModel model)
         {

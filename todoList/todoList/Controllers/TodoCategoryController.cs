@@ -17,7 +17,7 @@ using Entities.TodoCategoryDto;
 
 namespace todoList.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class TodoCategoryController : ControllerBase
     {
@@ -52,7 +52,7 @@ namespace todoList.Controllers
         }
 
         [HttpGet]
-        [Route("{id}", Name = "TodoCategoryById")]
+        [Route("{id}", Name = "todo-category-by-id")]
         public IActionResult GetTodoCategoryById(int id)
         {
             try
@@ -144,7 +144,7 @@ namespace todoList.Controllers
 
                 var createdTodoCategory = _mapper.Map<TodoCategoryDTO>(todoCategoryEntity);
                 _logger.LogInfo($"Create new TodoCategory: {createdTodoCategory}");
-                return CreatedAtRoute("TodoCategoryById", new { id = createdTodoCategory.ID }, createdTodoCategory);
+                return CreatedAtRoute("todo-category-by-id", new { id = createdTodoCategory.ID }, createdTodoCategory);
             }
             catch (Exception ex)
             {
