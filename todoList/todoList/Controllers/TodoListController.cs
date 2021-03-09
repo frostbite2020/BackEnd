@@ -33,7 +33,7 @@ namespace todoList.Controllers
         }
 
         //GET : api/TodoCategory
-        [HttpGet]
+        /*[HttpGet]
         public IActionResult GetAllLists([FromQuery]TodoListParameters todoListParameters)
         {
             try
@@ -59,7 +59,7 @@ namespace todoList.Controllers
                 _logger.LogError($"There is something wrong with GetAllList {ex.Message}");
                 return StatusCode(500, "Internal Server Error");
             }
-        }
+        }*/
         //get by todoid
         //GET : api/TodoCategory
         [HttpGet]
@@ -95,93 +95,28 @@ namespace todoList.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
-        //GET : api/TodoCategory
-        /*[HttpGet]
-        [Route("InnerJoin")]
-        public IActionResult GetListWithCategory([FromQuery]TodoListParameters todoListParameters)
-        {
-            try
-            {
-                var a = _repository.TodoList.GetAllTodoLists(todoListParameters);
-                var lists = _repository.TodoList.GetAllTodoLists(todoListParameters).Join(
-                    _repository.TodoCategory.GetAllTodoCategories(),
-                    list => list.TodoCategoryID,
-                    category => category.ID,
-                    (list, category) => new
-                    {
-                        TodoID = list.TodoID,
-                        ActivityTitle = list.ActivityTitle,
-                        Priority = list.Priority,
-                        Note = list.Note,
-                        status = list.status,
-                        TodoCategoryID = list.TodoCategoryID,
-                        CategoryTitle = category.CategoryTitle
-                    });
-                var metadata = new
-                {
-                    a.TotalCount,
-                    a.PageSize,
-                    a.CurrentPage,
-                    a.TotalPages,
-                    a.HasNext,
-                    a.HasPrevious
-                };
-                Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
-                _logger.LogInfo($"Returned {a.TotalCount} owners from database.");
-                _logger.LogInfo($"Returned All Todo List from DB");
-                return Ok(lists);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"There is something wrong with GetAllList {ex.Message}");
-                return StatusCode(500, "Internal Server Error");
-            }
-        }*/
-
-        
-        [HttpGet]
-        [Route("List/{id}", Name = "TodoListById")]
-        public IActionResult GetTodoListById(int id)
-        {
-            try
-            {
-                var todoList = _repository.TodoList.GetTodoListById(id);
-                if (todoList == null)
-                {
-                    _logger.LogError($"Id {id} that you search is not found on db");
-                    return NotFound();
-                }
-                var todoListResult = _mapper.Map<TodoListDTO>(todoList);
-                _logger.LogInfo($"Returned Todo Category That have Id: {id}");
-                return Ok(todoListResult);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"There is something wrong with GetTodoCategoryById {ex.Message}");
-                return StatusCode(500, "Internal Server Error");
-            }
-        }
 
         // POST: api/TodoCategory
         [HttpPost]
-        public IActionResult CreateTodoList([FromBody]ListCreateDto todoList)
+        public IActionResult CreateTodoList( [FromBody]ListCreateDto todoList)
         {
             try
             {
+                
                 if (todoList == null)
                 {
                     _logger.LogError($"TodoCategory Object Cannot be Null");
-                    return BadRequest("TodoCategory Object Cannot Be Null");
+                    return BadRequest(new { message = "TodoCategory Object Cannot Be Null" });
                 }
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError($"TodoCategory object you input is not valid");
-                    return BadRequest("TodoCategory object from client is not valid");
+                    return BadRequest(new { message = "TodoCategory object from client is not valid" });
                 }
                 var a = _repository.TodoList.GetTodoListTitle(todoList.ActivityTitle);
                 if (a != null)
                 {
-                    return BadRequest($"we alredy have category {todoList.ActivityTitle} in our db, cannot have same category");
+                    return BadRequest(new { message = $"we alredy have category {todoList.ActivityTitle} in our db, cannot have same category" });
                 }
                 var todoListEntity = _mapper.Map<TodoList>(todoList);
 
@@ -206,12 +141,12 @@ namespace todoList.Controllers
             {
                 if (todoList == null)
                 {
-                    return BadRequest("Owner object is null");
+                    return BadRequest(new { message = "Owner object is null" });
                 }
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError("Invalid owner object sent from client");
-                    return BadRequest("Invalid model object");
+                    return BadRequest(new { message = "Invalid model object" });
                 }
                 var todoListEntity = _repository.TodoList.GetTodoListById(id);
                 if (todoListEntity == null)
@@ -222,7 +157,7 @@ namespace todoList.Controllers
                 var a = _repository.TodoList.GetTodoListTitle(todoList.ActivityTitle);
                 if (a != null)
                 {
-                    return BadRequest($"we alredy have category {todoList.ActivityTitle} in our db, cannot have same category");
+                    return BadRequest(new { message = $"we alredy have category {todoList.ActivityTitle} in our db, cannot have same category" });
                 }
                 _mapper.Map(todoList, todoListEntity);
                 _repository.TodoList.UpdateTodoList(todoListEntity);
@@ -235,43 +170,7 @@ namespace todoList.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
-        // PUT: api/TodoCategory/TodoList/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for
-        // more details see https://aka.ms/RazorPagesCRUD.
-        /*[HttpPut("{id}")]
-        public async Task<IActionResult> PutTodoList(int id, TodoList todoList)
-        {
-            var a = await _context.TodoLists.Where(x => x.ActivityTitle.Equals(todoList.ActivityTitle)).FirstOrDefaultAsync();
-
-            if (id != todoList.TodoID)
-            {
-                return BadRequest();
-            }
-            if (a != null)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(todoList).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!TodoListExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }*/
+        
         // DELETE: api/TodoCategory/TodoList/5
         [HttpDelete("{id}")]
         public IActionResult DeleteTodoCategory(int id)
@@ -293,26 +192,5 @@ namespace todoList.Controllers
                 return StatusCode(500, "Internal Server Error");
             }
         }
-        // DELETE: api/TodoCategory/TodoList/5
-/*        [HttpDelete("{id}")]
-        public async Task<ActionResult<TodoList>> DeleteTodoList(int id)
-        {
-            var a = await _context.TodoLists.Include(p => p.TodoCategory).Where(p => p.TodoID == id).FirstOrDefaultAsync();
-            if (a == null)
-            {
-                return NotFound();
-            }
-
-            _context.TodoLists.Remove(a);
-            await _context.SaveChangesAsync();
-
-            return a;
-        }
-
-        private bool TodoListExists(long id)
-        {
-            return _context.TodoLists.Any(e => e.TodoID == id);
-        }*/
-
     }
 }

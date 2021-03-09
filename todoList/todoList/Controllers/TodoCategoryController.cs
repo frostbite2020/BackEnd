@@ -81,12 +81,12 @@ namespace todoList.Controllers
             {
                 if (todoCategory == null)
                 {
-                    return BadRequest("Owner object is null");
+                    return BadRequest(new { message = "Owner object is null" });
                 }
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError("Invalid owner object sent from client");
-                    return BadRequest("Invalid model object");
+                    return BadRequest(new { message = "Invalid model object" });
                 }
                 var todoCategoryEntity = _repoWrapper.TodoCategory.GetTodoCategoryById(id);
                 if(todoCategoryEntity == null)
@@ -97,12 +97,12 @@ namespace todoList.Controllers
                 var a = _repoWrapper.TodoCategory.GetCategoryTitle(todoCategory.CategoryTitle);
                 if (a != null)
                 {
-                    return BadRequest($"we alredy have category {todoCategory.CategoryTitle} in our db, cannot have same category");
+                    return BadRequest(new { message = $"we alredy have category {todoCategory.CategoryTitle} in our db, cannot have same category" });
                 }
                 if (_repoWrapper.TodoList.ListsByCategory(id).Any())
                 {
                     _logger.LogError($"Cannot update Category title with id: {id}. It has related todo list. Delete those List first");
-                    return BadRequest("Cannot update todo list. It has related todo list. Delete those todo list first");
+                    return BadRequest(new { message = "Cannot update todo list. It has related todo list. Delete those todo list first" });
                 }
                 _mapper.Map(todoCategory, todoCategoryEntity);
                 _repoWrapper.TodoCategory.UpdateTodoCategory(todoCategoryEntity);
@@ -125,17 +125,17 @@ namespace todoList.Controllers
                 if(todoCategory == null)
                 {
                     _logger.LogError($"TodoCategory Object Cannot be Null");
-                    return BadRequest("TodoCategory Object Cannot Be Null");
+                    return BadRequest(new { message = "TodoCategory Object Cannot Be Null" });
                 }
                 if (!ModelState.IsValid)
                 {
                     _logger.LogError($"TodoCategory object you input is not valid");
-                    return BadRequest("TodoCategory object from client is not valid");
+                    return BadRequest(new { message = "TodoCategory object from client is not valid" });
                 }
                 var a = _repoWrapper.TodoCategory.GetCategoryTitle(todoCategory.CategoryTitle);
                 if (a != null)
                 {
-                    return BadRequest($"we alredy have category {todoCategory.CategoryTitle} in our db, cannot have same category");
+                    return BadRequest(new { message = $"we alredy have category {todoCategory.CategoryTitle} in our db, cannot have same category" });
                 }
                 var todoCategoryEntity = _mapper.Map<TodoCategory>(todoCategory);
                 
@@ -167,7 +167,7 @@ namespace todoList.Controllers
                 if (_repoWrapper.TodoList.ListsByCategory(id).Any())
                 {
                     _logger.LogError($"Cannot delete category with id: {id}. It has related Todo List. Delete those List first");
-                    return BadRequest($"Cannot delete category! It has related Todo List. Delete them first");
+                    return BadRequest(new { message = $"Cannot delete category! It has related Todo List. Delete them first" });
                 }
                 _repoWrapper.TodoCategory.DeleteTodoCategory(todoCategory);
                 _repoWrapper.Save();

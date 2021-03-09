@@ -14,7 +14,7 @@ namespace Contracts
         IEnumerable<TodoList> GetListByCategoryID(int todoCategoryID);
         TodoList GetTodoListById(int id);
         TodoList GetTodoListTitle(string title);
-        void CreateTodoList(TodoList todtodoList);
+        void CreateTodoList(TodoList todoList);
         void UpdateTodoList(TodoList todoList);
         void DeleteTodoList(TodoList todoList);
     }
